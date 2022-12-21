@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Appointment Booking App</title>
+</head>
+
+<body>
+    <h1>Appointment Booking App</h1>
+    <form id="myform">
+        <input type="text" id="name">
+        <input type="text" id="email">
+        <input type="submit" value="Submit" id="btn">
+    </form>
+    <ul id="addusers"></ul>
+    <script>
+        let form = document.getElementById('myform')
+        let InputName = document.getElementById('name')
+        let InputEmail = document.getElementById('email')
+        let userlist = document.getElementById('addusers')
+        form.addEventListener('submit', addusers);
+
+
+        function addusers(e) {
+            e.preventDefault()
+            let obj = {
+                Name: "",
+                Email: ""
+            }
+            obj.Name = InputName.value
+            obj.Email = InputEmail.value
+            localStorage.setItem(InputEmail.value, JSON.stringify(obj));
+            let li = document.createElement('li')
+            let text = document.createTextNode(`Name:${obj.Name} Email:${obj.Email}`);
+            li.appendChild(text)
+            userlist.appendChild(li)
+        }
+        for (let i = 0; i < localStorage.length; i++) {
+            let email = localStorage.key(i)
+            let details = JSON.parse(localStorage.getItem(email));
+            let li = document.createElement('li')
+            let text = document.createTextNode(`Name:${details.Name} Email:${details.Email}`);
+            li.appendChild(text)
+            userlist.appendChild(li)
+        }
+    </script>
+</body>
+
+</html>
