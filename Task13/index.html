@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Appointment Booking App</title>
+</head>
+
+<body>
+    <h1>Appointment Booking App</h1>
+    <form id="myform">
+        <input type="text" id="name">
+        <input type="text" id="email">
+        <input type="submit" value="Submit" id="btn">
+    </form>
+    <ul id="addusers"></ul>
+    <script>
+        let form = document.getElementById('myform')
+        let InputName = document.getElementById('name')
+        let InputEmail = document.getElementById('email')
+        let userlist = document.getElementById('addusers')
+        form.addEventListener('submit', addUserDetailsToLocal);
+        userlist.addEventListener('click', removeOrEditItem)
+
+        function addUserDetailsToLocal(e) {
+            e.preventDefault()
+            let obj = {
+                Name: InputName.value,
+                Email: InputEmail.value
+            }
+            if (localStorage.getItem(obj.Email)) {
+                removeDetailsFromScreen(obj.Email)
+            }
+            localStorage.setItem(InputEmail.value, JSON.stringify(obj))
+            showUserDetailsOnScreen(obj.Name, obj.Email)
+        }
+        for (let i = 0; i < localStorage.length; i++) {
+            let keyname = localStorage.key(i)
+            let stringDetails = localStorage.getItem(keyname)
+            let objectDetails = JSON.parse(stringDetails)
+            showUserDetailsOnScreen(objectDetails.Name, objectDetails.Email)
+        }
+        function showUserDetailsOnScreen(n, e) {
+            let li = document.createElement('li')
+            li.setAttribute('id', e)
+            li.className = 'list'
+            let editbtn = document.createElement('button')
+            editbtn.className = 'edit'
+            editbtn.appendChild(document.createTextNode('EDIT'))
+            let delbtn = document.createElement('button')
+            delbtn.className = 'delete'
+            delbtn.appendChild(document.createTextNode('DELETE'))
+            let userDetails = document.createTextNode(`Name:${n}  Email:${e}`);
+            li.appendChild(userDetails)
+            li.appendChild(editbtn)
+            li.appendChild(delbtn)
+            userlist.appendChild(li)
+            InputName.value=''
+            InputEmail.value=''
+        }
+
+        function removeDetailsFromScreen(em) {
+            let removeEle = document.getElementById(em);
+            if(removeEle){
+
+                userlist.removeChild(removeEle);
+            }
+        }
+
+        function removeOrEditItem(e) {
+            if (e.target.classList.contains('delete')) {
+                let li = e.target.parentElement
+                localStorage.removeItem(li.id)
+                userlist.removeChild(li)
+            }
+            if(e.target.classList.contains('edit')){
+                let li = e.target.parentElement
+                InputEmail.value=li.id
+                let str=localStorage.getItem(li.id)
+                let objc=JSON.parse(str)
+                InputName.value=objc.Name
+                userlist.removeChild(li)
+
+            }
+        }
+    </script>
+</body>
+
+</html>
